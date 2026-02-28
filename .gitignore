@@ -1,0 +1,12 @@
+# Terraform files
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform.lock.hcl
+
+# Docker & OS
+.DS_Store
+node_modules/
+__pycache__/
+.env

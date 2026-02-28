@@ -1,0 +1,42 @@
+name: Python DevSecOps Azure Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  security_scans:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. SAST: Bandit (Python-specific security linter)
+      - name: Run Bandit (SAST)
+        run: |
+          pip install bandit
+          bandit -r ./src -ll # Fails on Medium/High severity
+
+      # 2. Dependency Scan: Safety (Checks for known CVEs in libraries)
+      - name: Run Safety (Dependency Scan)
+        run: |
+          pip install safety
+          # Check requirements.txt for vulnerabilities
+          if [ -f requirements.txt ]; then safety check -r requirements.txt; fi
+
+      # 3. IaC Scan: Checkov (Scans Kubernetes/Terraform files)
+      - name: Run Checkov (IaC Scan)
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: infra/
+          framework: terraform
+          check: CKV_AWS_1,CKV_AZURE_1
+          soft_fail: false
+          quiet: true
+        env:
+          CHECKOV_SCA_CHECK: "true"

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app-blue
+  labels:
+    app: python-app
+    version: blue
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: python-app
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: python-app
+        version: blue
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: python-app
+        image: jnelsendevsec0387f0d6.azurecr.io/python-app:v1
+        ports:
+        - containerPort: 5000
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+          requests:
+            cpu: "250m"
+            memory: "128Mi"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
