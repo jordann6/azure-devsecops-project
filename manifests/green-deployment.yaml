@@ -19,8 +19,35 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: python-app
-          image: jnelsendevsec0387f0d6.azurecr.io/python-app:v2 
+          image: ${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}
           ports:
             - containerPort: 5000
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20

@@ -1,21 +1,23 @@
 variable "resource_group_name" {
   type        = string
   description = "Name of the resource group"
-  default     = "DevSecOps-RG"
+  default     = "rg-devsecops-dev"
 }
 
 variable "location" {
   type        = string
   description = "Azure region to deploy resources"
-  default     = "East US"
+  default     = "eastus"
 }
 
 variable "cluster_name" {
   type        = string
-  default     = "Secure-AKS-Cluster"
+  description = "AKS cluster name"
+  default     = "aks-devsecops-dev"
 }
 
 variable "acr_name" {
   type        = string
-  description = "Must be globally unique, alphanumeric only"
+  description = "ACR name prefix — must be globally unique, alphanumeric only (random suffix appended)"
+  default     = "acrdevsecops"
 }

@@ -10,3 +10,8 @@
 node_modules/
 __pycache__/
 .env
+
+# ZAP output
+zap_report*
+report_html*
+report_json*
