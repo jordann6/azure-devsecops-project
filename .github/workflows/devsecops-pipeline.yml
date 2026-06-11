@@ -1,10 +1,8 @@
 name: DevSecOps Pipeline
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
+
 
 env:
   IMAGE_NAME: python-app
