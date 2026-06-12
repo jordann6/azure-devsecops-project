@@ -1,5 +1,7 @@
 # Azure DevSecOps Pipeline
 
+[![Validate](https://github.com/jordann6/azure-devsecops-project/actions/workflows/validate.yml/badge.svg)](https://github.com/jordann6/azure-devsecops-project/actions/workflows/validate.yml)
+
 End-to-end secure CI/CD pipeline for a containerized Python/Flask app deployed to Azure Kubernetes Service with a blue/green rollout strategy. Security is enforced at every stage before code can reach production — SAST, dependency auditing, IaC scanning, container vulnerability scanning, and DAST all gate the deploy job.
 
 ## Architecture
