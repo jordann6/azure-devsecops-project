@@ -1,6 +1,17 @@
 {
     "failed_checks": [
         {
+            "file": "/Dockerfile",
+            "findings": [
+                {
+                    "resource": "/Dockerfile.",
+                    "check_ids": [
+                        "CKV_DOCKER_2"
+                    ]
+                }
+            ]
+        },
+        {
             "file": "/infra/main.tf",
             "findings": [
                 {
@@ -30,6 +41,59 @@
                         "CKV_AZURE_232",
                         "CKV_AZURE_4",
                         "CKV_AZURE_6"
+                    ]
+                }
+            ]
+        },
+        {
+            "file": "/manifests/blue-deployment.yaml",
+            "findings": [
+                {
+                    "resource": "Deployment.default.python-app-blue",
+                    "check_ids": [
+                        "CKV_K8S_15",
+                        "CKV_K8S_21",
+                        "CKV_K8S_38",
+                        "CKV_K8S_40",
+                        "CKV_K8S_43"
+                    ]
+                },
+                {
+                    "resource": "Pod.default.python-app-blue.app-python-app.version-blue",
+                    "check_ids": [
+                        "CKV2_K8S_6"
+                    ]
+                }
+            ]
+        },
+        {
+            "file": "/manifests/green-deployment.yaml",
+            "findings": [
+                {
+                    "resource": "Deployment.default.python-app-green",
+                    "check_ids": [
+                        "CKV_K8S_15",
+                        "CKV_K8S_21",
+                        "CKV_K8S_38",
+                        "CKV_K8S_40",
+                        "CKV_K8S_43"
+                    ]
+                },
+                {
+                    "resource": "Pod.default.python-app-green.app-python-app.version-green",
+                    "check_ids": [
+                        "CKV2_K8S_6"
+                    ]
+                }
+            ]
+        },
+        {
+            "file": "/manifests/service.yaml",
+            "findings": [
+                {
+                    "resource": "Service.default.python-app-service",
+                    "check_ids": [
+                        "CKV_K8S_21"
                     ]
                 }
             ]
