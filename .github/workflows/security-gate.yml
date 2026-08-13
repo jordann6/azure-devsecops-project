@@ -78,3 +78,48 @@ jobs:
           if [ -n "$req" ]; then
             pip-audit -r "$req" || true
           fi
+
+  # Stack detection, ported from the add-security-gate PR rather than merging it.
+  #
+  # That PR predated the hardening commits on this branch and still carried
+  # soft_fail: true on Checkov. Merging it would have quietly reverted this
+  # repo's only enforcing gate back to report-only, which is the opposite of
+  # what the repo named "devsecops" should be doing. So only the two jobs main
+  # was actually missing came across, and the enforcement settings here stayed
+  # as they are.
+  detect:
+    name: Detect stack
+    runs-on: ubuntu-latest
+    outputs:
+      has_dockerfile: ${{ steps.scan.outputs.has_dockerfile }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: scan
+        run: |
+          dk=false
+          [ -n "$(find . -iname 'Dockerfile*' -not -path './.git/*' -print -quit)" ] && dk=true
+          echo "has_dockerfile=$dk" >> "$GITHUB_OUTPUT"
+
+  # Container scanning. Report-only for now: this builds whatever Dockerfile it
+  # finds, and a base-image CVE with no fix available should not block a merge
+  # that did not introduce it. ignore-unfixed is doing most of that work already.
+  container:
+    name: Container scan (Trivy)
+    runs-on: ubuntu-latest
+    needs: detect
+    if: needs.detect.outputs.has_dockerfile == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: |
+          df=$(find . -iname 'Dockerfile' -not -path './.git/*' | head -1)
+          docker build -f "$df" -t local-scan-target:${{ github.sha }} "$(dirname "$df")"
+      - name: Trivy image scan
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: image
+          image-ref: local-scan-target:${{ github.sha }}
+          format: table
+          exit-code: "0"
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
